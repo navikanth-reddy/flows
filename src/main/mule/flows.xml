@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c0fe1b41-62b2-433c-91a8-b085b8ec209e" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="main-flow" doc:id="80ed279e-f3d9-4eae-a8ca-2f6ad5f93677" >
+		<http:listener doc:name="Listener" doc:id="7b6a89bf-5e4e-47b8-a5e7-4bcb012c9740" config-ref="HTTP_Listener_config" path="sample"/>
+		<logger level="INFO" doc:name="Logger" doc:id="ab03341d-671d-4f21-8b18-5a0af8a70fb7" message="flow start log"/>
+		<set-variable value="main-flow variable" doc:name="main-flow var" doc:id="9f262363-8da5-4275-955a-b7335bf026b5" variableName="MainFlowVar"/>
+		<set-payload value="main-flow payload" doc:name="Set Payload" doc:id="f777a4f4-1377-4ad5-bf13-2ce5e8c152cc" />
+		<async doc:name="Async" doc:id="58964f8c-d17b-4e18-9178-bd408849451a" >
+			<flow-ref doc:name="Flow Reference" doc:id="769a9ebf-23af-4518-b95b-17bb90615592" name="sub-flow" />
+		</async>
+		<flow-ref doc:name="Flow Reference" doc:id="610ff8e7-2f87-4930-9248-d64980715485" name="Pravite-Flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="e3259e7d-257d-430e-837c-d1ed8860b23c" message="flow end log #[payload] #[vars.SubFlowVar]"/>
+	</flow>
+	<sub-flow name="sub-flow" doc:id="de63a0e5-09f9-42e7-b4f6-f035fa289053" >
+		<try doc:name="Try" doc:id="eeada5ee-3839-4eac-b83b-690c4d9ae2e6" >
+			<logger level="INFO" doc:name="Logger" doc:id="dd8bc91c-e442-44ff-845a-dbed397fbb4a" message="sub-flow start log #[payload]" />
+			<set-variable value="sub-flow variable" doc:name="sub-flow Variable" doc:id="8fc982d3-4e18-4c3a-bb35-000eed76de53" variableName="SubFlowVar" />
+			<set-payload value="sub-flow payload" doc:name="Set Payload" doc:id="36e64f4c-3489-4046-afd0-7d2c5f6a871e" />
+			<logger level="INFO" doc:name="Logger" doc:id="576f51be-98d2-4b74-a101-607bf02d4785" message="sub-flow end log #[payload] #[vars.MainFlowVar]" />
+		</try>
+	</sub-flow>
+	<flow name="Pravite-Flow" doc:id="70fb050e-df0a-4755-a532-f72f0c1b65ff" >
+		<logger level="INFO" doc:name="Logger" doc:id="d3b4ec7a-cd68-48a5-afda-dea7529b748c" message="Pravite flow"/>
+	</flow>
+</mule>
